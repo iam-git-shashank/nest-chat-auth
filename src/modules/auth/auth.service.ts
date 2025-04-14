@@ -13,13 +13,7 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { JwtAuthGuard } from './jwt-auth.gaurd';
-import RequestWithUser from './reqwithUser.interface';
 import { User, UserService } from '../user/user.service';
-import Users from '../user/entities/user.entity';
-import { use } from 'passport';
-import { ThrowStatement } from 'ts-morph';
-import cookieParser from 'cookie-parser';
 
 type SignInData = { userId: number; email: string };
 type AuthInput = { email: string; password: string };

@@ -13,10 +13,7 @@ import {
 
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './jwt-auth.gaurd';
-import RequestWithUser from './reqwithUser.interface';
 import { Response } from 'express';
-import Users from '../user/entities/user.entity';
 import { User } from '../user/user.service';
 import { authGuard } from './guards/auth.guard';
 
