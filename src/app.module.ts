@@ -11,6 +11,12 @@ import { UserModule } from './modules/user/user.module';
 import { MessageModule } from './modules/chat/chat.module';
 import { ChatGateway } from './modules/chat/chat.gateway';
 import { AuthenticationModule } from './modules/auth/auth.module';
+import { FollowerModule } from './modules/follower/follower.module';
+import { PostModule } from './modules/post/post.module';
+import { LikesService } from './modules/likes/likes.service';
+import { LikesController } from './modules/likes/likes.controller';
+import { LikesModule } from './modules/likes/likes.module';
+import { CommentsModule } from './modules/comments/comments.module';
 
 @Module({
   imports: [
@@ -23,9 +29,9 @@ import { AuthenticationModule } from './modules/auth/auth.module';
     TraineeModule,
     UserModule,
     MessageModule,
-    AuthenticationModule
+    AuthenticationModule,FollowerModule, PostModule, LikesModule, CommentsModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, ],
+  providers: [AppService, ],
 })
 export class AppModule {}

@@ -26,7 +26,7 @@ export class UserService {
   async getByEmail(email: string) {
     const user = await this.entityRepo.findOne({ email });
     if (user) {
-      user.password=""
+      // user.password=""
       return user;
     }
     throw new HttpException(
@@ -34,9 +34,24 @@ export class UserService {
       HttpStatus.NOT_FOUND,
     );
   }
-  async findUserByName(username: string): Promise<User | undefined>{
-    return all_users.find((user)=>user.email===username)
+  async findAllUsers() {
+    return await this.entityRepo.findAll({
+      fields: ['id', 'email', 'name'], // list only the columns you want
+    });
   }
 
-  
+  async findUserByName(username: string): Promise<User | undefined> {
+    return all_users.find((user) => user.email === username);
+  }
+  async searchUsers(query: string) {
+    return this.entityRepo.find(
+      {
+        name: { $like: `%${query}%` },
+      },
+      {
+        fields: ['id', 'name', 'email'], // exclude sensitive data
+        limit: 10, // optional: limit results
+      },
+    );
+  }
 }

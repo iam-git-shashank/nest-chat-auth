@@ -8,26 +8,33 @@ import { parse } from 'cookie';
 import { WsException } from '@nestjs/websockets';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/mysql';
+import Users from '../user/entities/user.entity';
+import { use } from 'passport';
 @Injectable()
 export class ChatService {
   constructor(
-    private readonly em: EntityManager,
-    private readonly authenticationService: AuthService,
     @InjectRepository(Message)
     private messageRepo: EntityRepository<Message>,
+    private readonly em: EntityManager,
+
+    private readonly authenticationService: AuthService,
+    @InjectRepository(Users)
+    private readonly userRepo: EntityRepository<Users>,
   ) {}
   async sendMessage(
     senderId: number,
     receiverId: number,
     content: string,
   ): Promise<Message> {
-    const message = this.messageRepo.create({
+    const em = this.em.fork();
+    const message = em.create(Message, {
       senderId,
       receiverId,
       content,
       createdAt: new Date(),
     });
-    await this.em.flush();
+    console.log(message);
+    await em.persistAndFlush(message);
     return message;
   }
   async getConversation(user1Id: number, user2Id: number): Promise<Message[]> {
@@ -43,22 +50,17 @@ export class ChatService {
   }
 
   async getUserFromSocket(socket: Socket) {
-    const cookie = socket.handshake.headers.cookie;
-    if (!cookie) {
-      throw new WsException('No authentication token found');
-    }
-    const { Authentication: authenticationToken } = parse(cookie);
-    if (!authenticationToken) {
-      throw new WsException('No authentication token found');
-    }
+    const cookie = socket.handshake.headers.authorization;
+    console.log('cook', cookie);
+    const token = cookie?.split(' ')[1];
+    if (!token) throw new WsException('Mssing token');
     const user =
-      await this.authenticationService.getUserFromAuthenticationToken(
-        authenticationToken,
-      );
+      await this.authenticationService.getUserFromAuthenticationToken(token);
 
     if (!user) {
       throw new WsException('Invalid credentials.');
     }
+    console.log('myuser', user);
     return user;
   }
 
@@ -66,9 +68,7 @@ export class ChatService {
     userAId: number,
     userBId: number,
   ): Promise<Message[]> {
-    const repo = this.em.getRepository(Message);
-
-    return await repo.find(
+    const all_msgs = await this.messageRepo.find(
       {
         $or: [
           { senderId: userAId, receiverId: userBId },
@@ -77,5 +77,6 @@ export class ChatService {
       },
       { orderBy: { createdAt: 'ASC' } },
     );
+    return all_msgs;
   }
 }

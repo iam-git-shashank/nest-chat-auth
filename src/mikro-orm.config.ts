@@ -15,7 +15,8 @@ const config: Options = {
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
   metadataProvider: TsMorphMetadataProvider,
-  contextName:"default"
+  contextName: 'default',
+  allowGlobalContext: true,
 };
 
 export default config;

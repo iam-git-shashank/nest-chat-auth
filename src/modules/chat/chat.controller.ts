@@ -1,5 +1,5 @@
 // src/message/message.controller.ts
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { GetUser } from '../auth/get-user.decorator'; // custom decorator to get user from token
 @Controller('messages')
@@ -7,11 +7,11 @@ import { GetUser } from '../auth/get-user.decorator'; // custom decorator to get
 export class MessageController {
   constructor(private readonly messageService: ChatService) {}
 
-  @Get()
+  @Get('/:userId/:with')
   async getMessages(
-    @GetUser('id') userId: number,
-    @Query('with') otherUserId: number,
+    @Param('userId') userId: number,
+    @Param('with') partnerId: number,
   ) {
-    return this.messageService.getMessagesBetween(userId, otherUserId);
+    return this.messageService.getMessagesBetween(userId, partnerId);
   }
 }

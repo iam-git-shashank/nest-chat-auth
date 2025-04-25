@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   forwardRef,
   HttpCode,
   HttpException,
@@ -18,7 +19,7 @@ import { User, UserService } from '../user/user.service';
 type SignInData = { userId: number; email: string };
 type AuthInput = { email: string; password: string };
 
-type AuthResult = { email: string; userId: number; accessToken: string };
+type AuthResult = { email: string; userId: number; accessToken: string ,name:string};
 
 export class AuthService {
   constructor(
@@ -39,6 +40,9 @@ export class AuthService {
       return createdUser;
     } catch (error) {
       console.log(error);
+      if (error.code === 'ER_DUP_ENTRY') {
+    throw new BadRequestException('Email already exists');
+  }
       throw new HttpException(
         'Something went wrong',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -53,10 +57,9 @@ export class AuthService {
       // console.log(auth_inp.email);
 
       const user = await this.userService.getByEmail(auth_inp.email);
-      console.log(user);
-      const is_in = await this.verifyPassword(auth_inp.password, user.password);
+       await this.verifyPassword(auth_inp.password, user.password);
       user.password = '';
-      return this.signInToken({ userId: user.id, email: user.email });
+      return this.signInToken({ userId: user.id, email: user.email,name:user.name });
     } catch (error) {
       throw new HttpException(
         'Wrong credentials provided',
@@ -69,24 +72,24 @@ export class AuthService {
     plainTextPassword: string,
     hashedPassword: string,
   ) {
+    console.log(hashedPassword.length)
     const isPasswordMatching = await bcrypt.compare(
       plainTextPassword,
-      hashedPassword,
+      hashedPassword
     );
     if (!isPasswordMatching) {
-      console.log('pass wro');
+      console.log('pass wro',plainTextPassword);
 
       throw new HttpException(
         'Wrong credentials provided',
         HttpStatus.BAD_REQUEST,
       );
     }
-    return isPasswordMatching;
   }
-  async signInToken(user: SignInData): Promise<AuthResult | null> {
+  async signInToken(user: {email:string,userId:number,name:string}): Promise<AuthResult | null> {
     const tokenPayload = { sub: user.userId, username: user.email };
     const accessToken = await this.jwtService.signAsync(tokenPayload);
-    return { accessToken, email: user.email, userId: user.userId };
+    return { accessToken, email: user.email, userId: user.userId,name:user.name };
   }
 
   public async getUserFromAuthenticationToken(token: string) {

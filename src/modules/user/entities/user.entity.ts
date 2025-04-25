@@ -11,9 +11,9 @@ class Users {
   @Property()
   message: string;
 
-  @Property()
+  @Property({unique:true})
   email: string;
-  @Property()
+  @Property({ hidden: true })
   password: string;
 }
 export default Users;

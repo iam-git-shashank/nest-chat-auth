@@ -9,7 +9,13 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ChatService} from './chat.service';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: 'http://localhost:5173',
+    credentials: true,
+  },
+  namespace: '/chat',
+})
 export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()
   server: Server;
@@ -17,7 +23,9 @@ export class ChatGateway implements OnGatewayConnection {
   constructor(private readonly chatService: ChatService) {}
 
   async handleConnection(socket: Socket) {
-    await this.chatService.getUserFromSocket(socket);
+    console.log(socket.id);
+    const sock_user=await this.chatService.getUserFromSocket(socket);
+     socket.data.user = sock_user.id;
   }
 
   @SubscribeMessage('send_message')
@@ -25,12 +33,13 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody() data: { to: number; content: string },
     @ConnectedSocket() socket: Socket,
   ) {
+    console.log("user",socket.data.user)
     const senderId: number = socket.data.user;
     const receiverId = data.to;
 
     const message = await this.chatService.sendMessage(
       senderId,
-      receiverId ,
+      receiverId,
       data.content,
     );
 

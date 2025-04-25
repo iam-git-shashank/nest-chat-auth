@@ -16,6 +16,6 @@ export class CreateUserDto {
   email: string;
   @IsString()
   @IsNotEmpty({ message: 'Role is required' })
-  @Length(2, 50, { message: 'Role must be between 2 and 50 characters' })
+  @Length(2, 100, { message: 'Role must be between 2 and 50 characters' })
   password: string;
 }

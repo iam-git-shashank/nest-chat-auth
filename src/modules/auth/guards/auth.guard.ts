@@ -9,7 +9,7 @@ export class authGuard implements CanActivate{
         const authorization = request.headers.authorization;
         const token = authorization?.split(' ')[1];
 
-
+console.log(token)
         if (!token) {
             throw new UnauthorizedException()
         }
@@ -18,10 +18,14 @@ export class authGuard implements CanActivate{
             request.user = {
                 userId: tokenPayload.sub,
                 username:tokenPayload.username
-           }
+            }
+            
             return true
         }
         catch (error) {
+            
+            console.log("sdds");
+            console.log(error)
             throw new UnauthorizedException();
         }
 
