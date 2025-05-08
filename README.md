@@ -6,7 +6,8 @@ Social Media with Authentication in NestJs+Socketio+MickroOrm
 
 ## Workflow
 -Auth-Flow
-![Flow](https://github.com/iam-git-shashank/)
+![Flow](https://github.com/iam-git-shashank/nest-chat-auth/blob/main/workflow/auth-flow.png)
+
 ## Project setup
 
 ```bash
