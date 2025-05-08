@@ -2,9 +2,6 @@ import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import Users from '../user/entities/user.entity';
-import { User } from '../user/user.service';
-
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private authenticationService: AuthService) {

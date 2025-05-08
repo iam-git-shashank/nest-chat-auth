@@ -1,7 +1,7 @@
 
 
 ## Description
-Chat Application with Authentication in nestJs
+Social Media with Authentication in NestJs+Socketio+MickroOrm
 
 
 ## Workflow

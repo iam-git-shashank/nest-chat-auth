@@ -13,15 +13,15 @@ import { JWT_SECRET } from '../configs/jwt-secret';
     PassportModule,
     ConfigModule,
     forwardRef(() => UserModule),
-    
+
     JwtModule.register({
       global: true,
       secret: JWT_SECRET,
-      signOptions:{expiresIn:"1d"}
-    })
+      signOptions: { expiresIn: '1d' },
+    }),
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthenticationController],
-  exports:[AuthService]
+  exports: [AuthService],
 })
 export class AuthenticationModule {}
