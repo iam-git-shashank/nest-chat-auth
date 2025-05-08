@@ -3,6 +3,10 @@
 ## Description
 Chat Application with Authentication in nestJs
 
+
+## Workflow
+-Auth-Flow
+![Flow](https://github.com/iam-git-shashank/)
 ## Project setup
 
 ```bash
